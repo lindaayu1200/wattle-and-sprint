@@ -9,6 +9,7 @@ import { updatePlay } from './60-game.js';
 import { audio } from './10-audio.js';
 import { resetNearMiss, updateNearMiss, drawNearMiss } from './85-nearmiss.js';
 import { initGusts, updateGusts, drawGusts, resetGusts } from './88-gusts.js';
+import { initCrowMeter, updateCrowMeter, drawCrowMeter, resetCrowMeter, recordCrowEvent } from './90-crowmeter.js';
 
 export { W, H, GROUND_Y, state, input, rand, clamp, lerp, ease, onReset, onStage } from './05-const.js';
 
@@ -16,6 +17,7 @@ export const canvas = document.getElementById('game');
 export const ctx = canvas.getContext('2d');
 
 initGusts();
+initCrowMeter();
 
 
 // ---------- input ----------
@@ -60,6 +62,7 @@ export function startRun() {
   for (const fn of resetHooks) fn();
   resetNearMiss();
   resetGusts();
+  resetCrowMeter();
 }
 
 
@@ -110,6 +113,7 @@ function frame(now) {
   const sceneBeforePlay = state.scene;
   if (state.scene === 'play') {
     updateGusts(dt);
+    updateCrowMeter(dt, null);
     updatePlay(dt);
     updateActors(dt);
     updateEntities(dt);
@@ -124,6 +128,7 @@ function frame(now) {
     drawEntities(ctx);
     drawActors(ctx);
     drawHUD(ctx);
+    drawCrowMeter(ctx);
   }
   if (state.scene === 'title') drawTitle(ctx);
   if (state.scene === 'caught' || state.scene === 'escaped') drawEnd(ctx);

@@ -6,6 +6,7 @@ import { audio } from './10-audio.js';
 import { emitScore, emitHurt } from './70-announcer.js';
 import { recordCorn, recordHazard } from './80-runstats.js';
 import { inspectHazardPass } from './85-nearmiss.js';
+import { recordCrowEvent } from './90-crowmeter.js';
 
 export const entities = [];   // {type,x,y,vx,vy,r,ph}
 export const particles = [];
@@ -65,6 +66,7 @@ export function hurtTurkey(cause) {
   burst(player.x, player.y - 50, '#e8b858', 20, 300);
   audio.hit();
   emitHurt();
+  recordCrowEvent('hurt');
   if (state.lives <= 0) {
     state.scene = 'caught'; state.sceneAt = state.time;
     state.slowmo = 1; audio.caught();
@@ -98,6 +100,7 @@ export function updateEntities(dt) {
       if (e.type === 'corn') {
         state.combo++; state.score += 10 * Math.min(5, 1 + (state.combo / 8 | 0));
         recordCorn();
+        recordCrowEvent('corn');
         burst(e.x, e.y, '#f0c030', 10, 160);
         audio.collect(state.combo % 6);
         emitScore(e.x, e.y - 24, 10 * Math.min(5, 1 + (state.combo / 8 | 0)));

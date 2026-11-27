@@ -6,6 +6,7 @@
 import { GROUND_Y, W, state, onReset } from './05-const.js';
 import { player } from './30-turkey.js';
 import { audio } from './10-audio.js';
+import { recordCrowEvent } from './90-crowmeter.js';
 
 const HAZARDS = new Set(['knife', 'oven', 'pot', 'hay', 'forkpit', 'saw']);
 const NEAR_MARGIN = 34;
@@ -100,6 +101,7 @@ function addCloseCall(entity) {
     tilt: (Math.random() - 0.5) * 0.08,
   });
   audio.nearMiss(multiplier);
+  recordCrowEvent('nearMiss');
 }
 
 // Called by 40-entities.js at the same point it marks a hazard as passed.
