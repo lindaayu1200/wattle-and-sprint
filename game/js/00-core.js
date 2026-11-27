@@ -8,11 +8,14 @@ import { drawHUD, drawTitle, drawEnd } from './50-hud.js';
 import { updatePlay } from './60-game.js';
 import { audio } from './10-audio.js';
 import { resetNearMiss, updateNearMiss, drawNearMiss } from './85-nearmiss.js';
+import { initGusts, updateGusts, drawGusts, resetGusts } from './88-gusts.js';
 
 export { W, H, GROUND_Y, state, input, rand, clamp, lerp, ease, onReset, onStage } from './05-const.js';
 
 export const canvas = document.getElementById('game');
 export const ctx = canvas.getContext('2d');
+
+initGusts();
 
 
 // ---------- input ----------
@@ -56,6 +59,7 @@ export function startRun() {
   state.shake = 0; state.flash = 0; state.slowmo = 0;
   for (const fn of resetHooks) fn();
   resetNearMiss();
+  resetGusts();
 }
 
 
@@ -105,6 +109,7 @@ function frame(now) {
   updateWorld(dt);
   const sceneBeforePlay = state.scene;
   if (state.scene === 'play') {
+    updateGusts(dt);
     updatePlay(dt);
     updateActors(dt);
     updateEntities(dt);
@@ -123,6 +128,7 @@ function frame(now) {
   if (state.scene === 'title') drawTitle(ctx);
   if (state.scene === 'caught' || state.scene === 'escaped') drawEnd(ctx);
   drawNearMiss(ctx);
+  drawGusts(ctx);
   ctx.restore();
   if (state.flash > 0) {
     ctx.fillStyle = `rgba(255,235,200,${state.flash * 0.5})`;

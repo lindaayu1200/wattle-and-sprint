@@ -1,6 +1,7 @@
 // 20-world.js — dynamic sky, parallax scenery, three biomes, ground.
 import { W, H, GROUND_Y, state, lerp, clamp } from './05-const.js';
 import { ctx } from './00-core.js';
+import { getGustLean } from './88-gusts.js';
 
 const BIOMES = [
   { // 0 farmyard — warm morning
@@ -138,7 +139,8 @@ export function drawWorld(ctx) {
   for (let i = 0; i < 40; i++) {
     const x = mod(i * 137 - px, W + 40) - 20;
     const y = GROUND_Y + 14 + ((i * 53) % (H - GROUND_Y - 20));
-    ctx.fillRect(x, y, 10 + (i % 3) * 8, 3);
+    ctx.save(); ctx.translate(x, y); ctx.rotate(getGustLean() * 0.45);
+    ctx.fillRect(0, 0, 10 + (i % 3) * 8, 3); ctx.restore();
   }
   // top edge line
   ctx.fillStyle = 'rgba(255,240,200,0.25)';
@@ -185,7 +187,7 @@ function drawProp(ctx, p, x, base) {
       ctx.fillStyle = '#c9a83a';
       for (let i = -2; i <= 2; i++) {
         const sw = Math.sin(state.time * 1.4 + i) * 6;
-        ctx.save(); ctx.translate(i * 16, 0); ctx.rotate(sw * 0.02);
+        ctx.save(); ctx.translate(i * 16, 0); ctx.rotate(sw * 0.02 + getGustLean());
         ctx.fillRect(-3, -95 - p.h * 30, 6, 95 + p.h * 30);
         ctx.beginPath(); ctx.ellipse(6, -100 - p.h * 30, 14, 5, -0.5, 0, 7); ctx.fill();
         ctx.restore();
