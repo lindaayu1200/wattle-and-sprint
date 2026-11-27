@@ -1,6 +1,7 @@
 // 30-turkey.js — the turkey hero (Tup) and Farmer Bram on his tail.
 import { W, GROUND_Y, state, input, lerp } from './05-const.js';
 import { ctx } from './00-core.js';
+import { recordJump } from './80-runstats.js';
 
 export const player = {
   x: 260, y: GROUND_Y, vy: 0, onGround: true, jumps: 0,
@@ -25,7 +26,9 @@ export function updateActors(dt) {
   if (input.jumpQueued > 0) {
     input.jumpQueued--;
     if (player.onGround || player.jumps < 2) {
+      const doubleJump = !player.onGround;
       player.jumps = player.onGround ? 1 : player.jumps + 1;
+      recordJump(doubleJump);
       player.vy = -player.jumps === 1 ? -760 : -680;
       player.onGround = false;
     }

@@ -4,6 +4,7 @@ import { onReset, onStage } from './00-core.js';
 import { player, farmer } from './30-turkey.js';
 import { audio } from './10-audio.js';
 import { emitScore, emitHurt } from './70-announcer.js';
+import { recordCorn, recordHazard } from './80-runstats.js';
 
 export const entities = [];   // {type,x,y,vx,vy,r,ph}
 export const particles = [];
@@ -80,6 +81,11 @@ export function updateEntities(dt) {
     e.ph = (e.ph ?? 0) + dt * 5;
     // world-relative: entities are spawned at screen-space and drift with world speed
     e.x -= 480 * dt * (e.type === 'corn' || e.type === 'feather' ? 1 : 0);
+    const isHazard = ['knife', 'hay', 'oven', 'pot', 'forkpit', 'saw'].includes(e.type);
+    if (isHazard && !e.dodged && e.x < player.x - 60) {
+      e.dodged = true;
+      recordHazard();
+    }
     if (e.x < -120) { entities.splice(i, 1); continue; }
 
     // collisions
@@ -89,6 +95,7 @@ export function updateEntities(dt) {
     if (dx * dx + dy * dy < hitR * hitR) {
       if (e.type === 'corn') {
         state.combo++; state.score += 10 * Math.min(5, 1 + (state.combo / 8 | 0));
+        recordCorn();
         burst(e.x, e.y, '#f0c030', 10, 160);
         audio.collect(state.combo % 6);
         emitScore(e.x, e.y - 24, 10 * Math.min(5, 1 + (state.combo / 8 | 0)));

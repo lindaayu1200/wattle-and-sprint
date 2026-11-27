@@ -2,6 +2,7 @@
 import { W, H, GROUND_Y, state, ease } from './05-const.js';
 import { drawTurkey, player as player0 } from './30-turkey.js';
 import { BIOMES } from './20-world.js';
+import { drawRunStats } from './80-runstats.js';
 
 const SERIF = 'Georgia, "Times New Roman", serif';
 
@@ -200,10 +201,12 @@ export function drawEnd(ctx) {
     ctx.fillText(s[1], x, cyy + 84);
   });
 
+  drawRunStats(ctx);
+
   // CTA
   if (state.time - state.sceneAt > 1.0) {
     const pulse = 1 + Math.sin(state.time * 3) * 0.04;
-    ctx.save(); ctx.translate(cx, 590); ctx.scale(pulse, pulse);
+    ctx.save(); ctx.translate(cx, 650); ctx.scale(pulse, pulse);
     ctx.fillStyle = caught ? '#c23c2a' : '#2a7a3c';
     ctx.beginPath(); ctx.roundRect(-230, -30, 460, 60, 30); ctx.fill();
     ctx.fillStyle = '#ffe9a8';
