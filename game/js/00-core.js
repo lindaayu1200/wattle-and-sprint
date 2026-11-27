@@ -101,11 +101,14 @@ function frame(now) {
   if (state.flash > 0) state.flash = Math.max(0, state.flash - dt * 2);
 
   updateWorld(dt);
+  const sceneBeforePlay = state.scene;
   if (state.scene === 'play') {
     updatePlay(dt);
     updateActors(dt);
     updateEntities(dt);
   }
+  if (sceneBeforePlay === 'play' && state.scene === 'escaped') announceEscape();
+  if (sceneBeforePlay === 'play' && state.scene === 'caught') announceCaught();
   ctx.save();
   if (state.shake > 0) ctx.translate(rand(-1, 1) * state.shake * 14, rand(-1, 1) * state.shake * 10);
   drawWorld(ctx);

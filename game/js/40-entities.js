@@ -3,6 +3,7 @@ import { W, GROUND_Y, state, rand } from './05-const.js';
 import { onReset, onStage } from './00-core.js';
 import { player, farmer } from './30-turkey.js';
 import { audio } from './10-audio.js';
+import { emitScore, emitHurt } from './70-announcer.js';
 
 export const entities = [];   // {type,x,y,vx,vy,r,ph}
 export const particles = [];
@@ -61,6 +62,7 @@ export function hurtTurkey(cause) {
   farmer.x = player.x - 120;
   burst(player.x, player.y - 50, '#e8b858', 20, 300);
   audio.hit();
+  emitHurt();
   if (state.lives <= 0) {
     state.scene = 'caught'; state.sceneAt = state.time;
     state.slowmo = 1; audio.caught();
@@ -89,6 +91,7 @@ export function updateEntities(dt) {
         state.combo++; state.score += 10 * Math.min(5, 1 + (state.combo / 8 | 0));
         burst(e.x, e.y, '#f0c030', 10, 160);
         audio.collect(state.combo % 6);
+        emitScore(e.x, e.y - 24, 10 * Math.min(5, 1 + (state.combo / 8 | 0)));
         entities.splice(i, 1); continue;
       }
       if (e.type === 'feather') {
@@ -96,6 +99,7 @@ export function updateEntities(dt) {
         state.farmerGap = 420; farmer.x = player.x - 420;
         burst(e.x, e.y, '#fff0d0', 18, 220);
         audio.double();
+        emitScore(e.x, e.y - 26, 150);
         entities.splice(i, 1); continue;
       }
       // hazards
