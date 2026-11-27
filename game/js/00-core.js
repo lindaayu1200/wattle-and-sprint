@@ -7,6 +7,7 @@ import { updateEntities, drawEntities } from './40-entities.js';
 import { drawHUD, drawTitle, drawEnd } from './50-hud.js';
 import { updatePlay } from './60-game.js';
 import { audio } from './10-audio.js';
+import { resetNearMiss, updateNearMiss, drawNearMiss } from './85-nearmiss.js';
 
 export { W, H, GROUND_Y, state, input, rand, clamp, lerp, ease, onReset, onStage } from './05-const.js';
 
@@ -54,6 +55,7 @@ export function startRun() {
   state.biome = 0; state.combo = 0; state.farmerGap = 420;
   state.shake = 0; state.flash = 0; state.slowmo = 0;
   for (const fn of resetHooks) fn();
+  resetNearMiss();
 }
 
 
@@ -109,6 +111,7 @@ function frame(now) {
   }
   if (sceneBeforePlay === 'play' && state.scene === 'escaped') announceEscape();
   if (sceneBeforePlay === 'play' && state.scene === 'caught') announceCaught();
+  updateNearMiss(dt);
   ctx.save();
   if (state.shake > 0) ctx.translate(rand(-1, 1) * state.shake * 14, rand(-1, 1) * state.shake * 10);
   drawWorld(ctx);
@@ -119,6 +122,7 @@ function frame(now) {
   }
   if (state.scene === 'title') drawTitle(ctx);
   if (state.scene === 'caught' || state.scene === 'escaped') drawEnd(ctx);
+  drawNearMiss(ctx);
   ctx.restore();
   if (state.flash > 0) {
     ctx.fillStyle = `rgba(255,235,200,${state.flash * 0.5})`;

@@ -26,6 +26,11 @@ class Audio {
   }
   jump() { this.tone(340, 0.18, 'square', 0.7, 260); }
   double() { this.tone(520, 0.16, 'square', 0.6, 320); }
+  nearMiss(multiplier = 1) {
+    const base = 430 + Math.min(4, multiplier) * 38;
+    this.tone(base, 0.12, 'triangle', 0.55, 180);
+    setTimeout(() => this.tone(base + 180, 0.16, 'triangle', 0.45, 240), 65);
+  }
   collect(n = 0) { this.tone(660 + n * 60, 0.12, 'triangle', 0.8, 180); }
   hit() { this.tone(180, 0.3, 'sawtooth', 0.9, -120); }
   gate() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => this.tone(f, 0.35, 'triangle', 0.9), i * 140)); }

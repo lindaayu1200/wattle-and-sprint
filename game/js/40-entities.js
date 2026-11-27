@@ -5,6 +5,7 @@ import { player, farmer } from './30-turkey.js';
 import { audio } from './10-audio.js';
 import { emitScore, emitHurt } from './70-announcer.js';
 import { recordCorn, recordHazard } from './80-runstats.js';
+import { inspectHazardPass } from './85-nearmiss.js';
 
 export const entities = [];   // {type,x,y,vx,vy,r,ph}
 export const particles = [];
@@ -85,6 +86,7 @@ export function updateEntities(dt) {
     if (isHazard && !e.dodged && e.x < player.x - 60) {
       e.dodged = true;
       recordHazard();
+      inspectHazardPass(e);
     }
     if (e.x < -120) { entities.splice(i, 1); continue; }
 
