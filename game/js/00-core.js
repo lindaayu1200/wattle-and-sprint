@@ -1,5 +1,5 @@
-// 00-core.js — bootstrapping, state machine, input, staged-shot hooks.
-// Wattle & Sprint: Outrun the Harvest — a Thanksgiving escape runner.
+// 00-core.js — starts the game loop, owns scene state and input, and prepares
+// staged review shots for Wattle & Sprint: Outrun the Harvest.
 import { W, H, state, input, rand, ease, resetHooks, stageHooks } from './05-const.js';
 import { updateWorld, drawWorld } from './20-world.js';
 import { updateActors, drawActors } from './30-turkey.js';
